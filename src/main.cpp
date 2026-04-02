@@ -1,8 +1,19 @@
 #include <iostream>
 #include <print>
+#include <raylib.h>
 
 int main() {
-	std::println("Hello, world!");
-	std::cin.get();
+
+	InitWindow(1280, 720, "LLGD Terra");
+
+	while (!WindowShouldClose()) {
+		BeginDrawing();
+		ClearBackground(RAYWHITE);
+
+		EndDrawing();
+	}
+
+
+	CloseWindow();
 	return 0;
 }

@@ -8,12 +8,13 @@ set(PRODUCTION_BUILD OFF CACHE BOOL "Make this a production build" FORCE)
 if(MSVC)
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:DEBUG>:Debug>")
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:RELEASE>:Release>")
-	add_compile_options(/arch:AVX2)
-else()
-	add_compile_options(-mavx2 -mfa)
 endif()
 
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build Raylib as static libraries" FORCE)
+
 project(game)
+
+add_subdirectory(thirdparty/raylib-5.5)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
@@ -47,3 +48,5 @@ elseif(APPLE OR UNIX)
 endif()
 
 target_include_directories(game PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+
+target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE raylib_static)
