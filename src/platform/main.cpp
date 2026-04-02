@@ -4,9 +4,17 @@
 #include <imgui.h>
 #include <rlImGui.h>
 
+#include "../gameLayer/gameMain.h"
+
 int main() {
 
+#if PRODUCTION_BUILD == 1
+	SetTraceLogLevel(LOG_NONE)
+#endif
+
 	InitWindow(1920, 1080, "LLGD Terra");
+	SetExitKey(KEY_NULL);
+	SetTargetFPS(144);
 
 	rlImGuiSetup(true);
 
@@ -14,13 +22,20 @@ int main() {
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.FontGlobalScale = 1.5;
 
+
+	if (!initGame()) {
+		goto shutdown;
+	}
+
 	while (!WindowShouldClose()) {
 		BeginDrawing();
-		ClearBackground(RAYWHITE);
+		ClearBackground(BLACK);
 
+		if (!updateGame()) {
+			CloseWindow();
+		}
 
-
-		#pragma region imgui
+#pragma region imgui
 		rlImGuiBegin();
 
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, {});
@@ -31,13 +46,15 @@ int main() {
 
 
 		rlImGuiEnd();
-		#pragma endregion imgui
+#pragma endregion
 
 		EndDrawing();
 	}
+	shutdown:
+	CloseWindow();
+
+	closeGame();
 
 	rlImGuiShutdown();
-
-	CloseWindow();
 	return 0;
 }
